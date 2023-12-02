@@ -3,55 +3,38 @@ package io.springbatch.springbatch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @RequiredArgsConstructor
 @Configuration
 public class HelloJobConfiguration {
 
-    private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory stepBuilderFactory;
-
     @Bean
-    public Job helloJob(){
-        return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
+    public Job helloJob(JobRepository jobRepository, Step step){
+        return new JobBuilder("helloJob", jobRepository)
+                .start(step)
                 .build();
     }
 
     @Bean
-    public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep1")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        // 구현하고자하는 내용
-                        System.out.println(" >> Helllo Spring Batch");
-                        return RepeatStatus.FINISHED;
-                    }
-                })
-                .build();
+    public Tasklet helloTasklet(){
+        return ((contribution, chunkContext) -> {
+            return RepeatStatus.FINISHED;
+        });
     }
 
     @Bean
-    public Step helloStep1() {
-        return stepBuilderFactory.get("helloStep1")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        // 구현하고자하는 내용
-                        System.out.println(" >> Helllo Spring Batch");
-                        return RepeatStatus.FINISHED;
-                    }
-                })
+    public Step helloStep(JobRepository jobRepository, Tasklet helloTasklet, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("helloStep", jobRepository)
+                .tasklet(helloTasklet, transactionManager)
                 .build();
     }
+
 }

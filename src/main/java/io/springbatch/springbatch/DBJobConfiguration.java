@@ -45,7 +45,7 @@ public class DBJobConfiguration {
     @Bean
     public Tasklet tasklet1(){
         return ((contribution, chunkContext) -> {
-            System.out.println("step1 was executed!");
+            System.out.println("step1 was executed");
             return RepeatStatus.FINISHED;
         });
     }
@@ -53,7 +53,7 @@ public class DBJobConfiguration {
     @Bean
     public Tasklet tasklet2(){
         return ((contribution, chunkContext) -> {
-            System.out.println("step2 was executed!");
+            System.out.println("step2 was executed");
             return RepeatStatus.FINISHED;
         });
     }

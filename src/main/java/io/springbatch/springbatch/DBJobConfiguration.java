@@ -2,6 +2,7 @@ package io.springbatch.springbatch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -13,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Date;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -45,6 +49,13 @@ public class DBJobConfiguration {
     @Bean
     public Tasklet tasklet1(){
         return ((contribution, chunkContext) -> {
+            JobParameters jobParameters = contribution.getStepExecution().getJobParameters();
+            jobParameters.getString("name");
+            jobParameters.getLong("seq");
+            jobParameters.getDate("date");
+            jobParameters.getDouble("age");
+            Map<String, Object> jobparameters1 = chunkContext.getStepContext().getJobParameters();
+
             System.out.println("step1 was executed");
             return RepeatStatus.FINISHED;
         });

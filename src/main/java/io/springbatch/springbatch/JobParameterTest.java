@@ -9,26 +9,26 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-@Component
-public class JobRunner  {
-    /*
+import java.util.Date;
 
+@Component
+public class JobParameterTest implements ApplicationRunner {
     @Autowired
     private JobLauncher jobLauncher;
 
     @Autowired
     private Job job;
 
-
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
         JobParameters jobParameters = new JobParametersBuilder()
-                .addString("name", "user2")
-                        .toJobParameters();
+                .addString("name", "user5")
+                .addLong("seq", 2L)
+                .addDate("date", new Date())
+                .addDouble("age", 15.5)
+                .toJobParameters();
 
         jobLauncher.run(job, jobParameters);
     }
-
-     */
 }

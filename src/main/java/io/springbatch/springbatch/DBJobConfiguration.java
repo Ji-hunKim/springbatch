@@ -57,6 +57,7 @@ public class DBJobConfiguration {
             Map<String, Object> jobparameters1 = chunkContext.getStepContext().getJobParameters();
 
             System.out.println("step1 was executed");
+            //throw new RuntimeException("step1 has failed");
             return RepeatStatus.FINISHED;
         });
     }

@@ -23,10 +23,11 @@ import java.util.Map;
 public class DBJobConfiguration {
 
     @Bean
-    public Job newJob(JobRepository jobRepository, Step step1, Step step2){
+    public Job newJob(JobRepository jobRepository, Step step1, Step step2, Step step3){
         return new JobBuilder("newJob", jobRepository)
                 .start(step1)
                 .next(step2)
+                .next(step3)
                 .build();
     }
 
@@ -42,6 +43,14 @@ public class DBJobConfiguration {
     public Step step2(JobRepository jobRepository, Tasklet tasklet2, PlatformTransactionManager transactionManager) {
         return new StepBuilder("step2", jobRepository)
                 .tasklet(tasklet2, transactionManager)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step step3(JobRepository jobRepository, Tasklet tasklet2, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("step2", jobRepository)
+                .tasklet(new CustomTasklet(), transactionManager)
                 .allowStartIfComplete(true)
                 .build();
     }
